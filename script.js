@@ -4,24 +4,23 @@ gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 gsap.set("#main-content", { autoAlpha: 1 });
 
 // --- PREMIUM ABOUT REVEAL ---
-function splitAboutHeader() {
-    const title = document.querySelector(".legacy-title");
-    if (!title) return;
-    const text = title.innerText;
-    title.innerHTML = text.split("").map(char =>
-        char === " " ? "<span>&nbsp;</span>" : `<span class="char-span">${char}</span>`
-    ).join("");
-}
-splitAboutHeader();
-
-gsap.fromTo(".char-span",
-    { y: 50, opacity: 0, filter: "blur(10px)" },
+gsap.fromTo(".legacy-title .line",
     {
-        y: 0, opacity: 1, filter: "blur(0px)",
-        duration: 0.8, stagger: 0.02, ease: "power3.out",
-        scrollTrigger: { trigger: ".legacy", start: "top 80%" }
-    }
-);
+        y: 80,
+        opacity: 0
+    },
+    {
+        y: 0,
+        opacity: 1,
+        duration: 0.6,
+        stagger: 0.15,
+        ease: "power3.out",
+        scrollTrigger: {
+            trigger: ".legacy",
+            start: "top 85%"
+        }
+    });
+
 
 // --- PROCESS TIMELINE (ROAD & CAR) ---
 const timelinePath = document.getElementById('timelinePath');
@@ -79,41 +78,48 @@ const divisionData = {
         title: "TOKS MARKETING",
         logo: "toks marketing.png",
         description: `<strong>Growth Engine for Modern Brands</strong><br><br>Toks Marketing is a results-driven marketing division focused on helping brands scale through strategic digital presence, performance marketing, and content systems. We specialize in building strong brand identities, generating high-quality leads, and creating scalable marketing frameworks.<br><br><strong>Core Services:</strong><br>Performance Marketing (Ads & Funnels)<br>Social Media Growth<br>Brand Strategy & Positioning<br>Lead Generation Systems`,
-        instagram: "@toks_marketing",
+        instagram: "<br>@toks_marketing",
         insta_url: "https://www.instagram.com/toks_marketing/",
-        email: "info@toksmarketing.com"
+        email: "<br>info@toksmarketing.com",
+        contact: "<br>+91 81579 64629<br>+91 62352 05130<br>+91 85901 59775"
     },
     production: {
         title: "TOKS PRODUCTION",
         logo: "Toks production.png",
         description: `<strong>Content That Builds Authority</strong><br><br>Toks Production is our creative powerhouse, delivering high-quality visual and digital content for businesses and personal brands. From cinematic videos to AI-powered content systems, we help clients communicate with clarity and impact.<br><br><strong>Core Services:</strong><br>Video Production & Editing<br>AI Avatar Content (Faceless/Personal Branding)<br>Commercial Shoots<br>Content Automation Systems`,
-        instagram: "@toksproduction",
+        instagram: "<br>@toksproduction",
         insta_url: "https://www.instagram.com/toksproduction/",
-        email: "info@toksproducation.com"
+        email: "<br>info@toksproducation.com",
+        contact: "<br>+91 97787 61189"
     },
     foundation: {
         title: "TOKS FOUNDATION",
         logo: "toks foundation.png",
         description: `<strong>Impact Beyond Business</strong><br><br>Toks Foundation is the social responsibility arm of the Toks ecosystem, focused on creating meaningful change through education, opportunities, and community-driven initiatives.<br><br>We aim to empower individuals by providing access to knowledge, resources, and support systems that help them build a better future.<br><br><strong>Focus Areas:</strong><br>Education Support<br>Skill Development<br>Community Outreach<br>Youth Empowerment`,
-        email: "info@toksfoundation.com"
+        email: "<br>info@toksfoundation.com"
     },
     finance: {
         title: "TOKS FINANCE",
         logo: "toks finance.png",
         description: `<strong>Smart Capital. Strategic Growth.</strong><br><br>Toks Finance provides structured financial solutions for individuals and businesses. We focus on responsible lending, financial planning, and capital access designed to support growth and stability.<br><br><strong>Core Services:</strong><br>Business & Personal Lending<br>Financial Advisory<br>Capital Structuring<br>Investment Guidance`,
-        email: "info@toksfinance.com"
+        email: "<br>info@toksfinance.com"
     },
     sureslot: {
         title: "SURESLOT",
         logo: "sureslot.png",
         description: `<strong>Your Pathway to Global Education</strong><br><br>SureSlot simplifies the study abroad journey by connecting students with the right universities, programs, and opportunities worldwide. We provide end-to-end support to ensure a smooth transition from application to enrollment.<br><br><strong>Core Services:</strong><br>University Admissions<br>Visa Assistance<br>Career & Course Guidance<br>Application Processing`,
-        email: "info@sureslot.in"
+        email: "<br>info@sureslot.in",
+        instagram: "<br>@sureslot",
+        insta_url: "https://www.instagram.com/sure.slot/",
+        contact: `<br>+91 85929 31642<br>
++91 70123 67149<br>
++91 98479 04076`
     },
     export: {
         title: "TOKS EXPORT",
         logo: "toks export .png",
         description: `<strong>Connecting Markets Globally</strong><br><br>Toks Export is dedicated to sourcing and delivering high-quality products across international markets. We focus on building reliable trade partnerships and ensuring seamless export operations with global standards.<br><br><strong>Core Services:</strong><br>Product Sourcing<br>International Trade Management<br>Logistics Coordination<br>Supplier Network Development`,
-        email: "info@toksexport.com"
+        email: "<br>info@toksexport.com"
     }
 };
 
@@ -134,15 +140,24 @@ function openMicrosite(divisionKey) {
     const ig = document.getElementById('detailInstagram');
     if (data.instagram) {
         ig.style.display = 'block';
-        ig.querySelector('.meta-value').textContent = data.instagram;
+        ig.querySelector('.meta-value').innerHTML = data.instagram;
         ig.href = data.insta_url || `https://instagram.com/${data.instagram.replace('@', '')}`;
     } else {
         ig.style.display = 'none';
     }
 
     const email = document.getElementById('detailEmail');
-    email.querySelector('.meta-value').textContent = data.email;
+    email.querySelector('.meta-value').innerHTML = data.email;
     email.href = `mailto:${data.email}`;
+
+    // Update Contact Card
+    const contactCard = document.getElementById('detailContact');
+    if (data.contact) {
+        contactCard.style.display = 'block';
+        contactCard.querySelector('.meta-value').innerHTML = data.contact;
+    } else {
+        contactCard.style.display = 'none';
+    }
 
     // Reset Elements for Animation
     gsap.set(cinematicOverlay, { opacity: 0, visibility: 'visible', backdropFilter: 'blur(0px)' });

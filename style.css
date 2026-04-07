@@ -1073,7 +1073,8 @@ video {
     -webkit-backdrop-filter: blur(8px);
     padding: 18px 24px;
     border-radius: 8px;
-    width: 260px;
+    width: 340px;
+    padding: 24px 28px;
     opacity: 0;
     transform: translateX(-15px);
     transition: opacity 0.4s ease 0s, transform 0.4s cubic-bezier(0.2, 1, 0.3, 1) 0s;
@@ -1085,8 +1086,8 @@ video {
 }
 
 .details-box h4 {
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
+    font-family: cinzel;
+    font-size: 1.8rem;
     color: var(--gold);
     margin-bottom: 6px;
     text-transform: uppercase;
@@ -1094,10 +1095,10 @@ video {
 }
 
 .details-box p {
-    font-family: var(--font-body);
-    font-size: 0.85rem;
+    font-family: Cormorant Garamond;
+    font-size: 1.6rem;
     color: var(--text-secondary);
-    line-height: 1.5;
+    line-height: 1.6;
     margin: 0;
     text-transform: none;
     letter-spacing: 0.02em;
@@ -3842,4 +3843,15 @@ s @media (max-width: 768px) {
     will-change: transform;
     transform: translateZ(0);
     backface-visibility: hidden;
+}
+
+.legacy-title .line {
+    display: block;
+    text-align: center;
+}
+
+.legacy-title {
+    line-height: 1.25;
+    letter-spacing: 0.06em;
+    margin-bottom: 2rem;
 }
