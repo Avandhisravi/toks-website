@@ -3855,3 +3855,23 @@ s @media (max-width: 768px) {
     letter-spacing: 0.06em;
     margin-bottom: 2rem;
 }
+
+#scrollVideoSection {
+    position: relative;
+    height: 300vh;
+}
+
+#scrollSticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#scrollVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}

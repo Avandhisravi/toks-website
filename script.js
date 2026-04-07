@@ -405,3 +405,30 @@ document.addEventListener("DOMContentLoaded", function () {
         updateTargetTime();
     });
 });
+document.addEventListener("DOMContentLoaded", function () {
+    const video = document.getElementById("scrollVideo");
+    const section = document.getElementById("scrollVideoSection");
+
+    if (!video || !section) {
+        console.log("Scroll video elements not found");
+        return;
+    }
+
+    function updateVideoOnScroll() {
+        const rect = section.getBoundingClientRect();
+        const sectionHeight = section.offsetHeight - window.innerHeight;
+
+        let progress = -rect.top / sectionHeight;
+        progress = Math.max(0, Math.min(progress, 1));
+
+        if (video.duration) {
+            video.currentTime = video.duration * progress;
+        }
+    }
+
+    video.addEventListener("loadedmetadata", function () {
+        updateVideoOnScroll();
+    });
+
+    window.addEventListener("scroll", updateVideoOnScroll);
+});
