@@ -362,10 +362,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const rect = section.getBoundingClientRect();
         const maxScroll = section.offsetHeight - window.innerHeight;
 
+        if (maxScroll <= 0) return;
+
         let progress = -rect.top / maxScroll;
         progress = Math.max(0, Math.min(progress, 1));
 
-        if (video.duration) {
+        if (video.duration && isFinite(video.duration)) {
             targetTime = video.duration * progress;
         }
     }
@@ -373,11 +375,16 @@ document.addEventListener("DOMContentLoaded", function () {
     function animateVideo() {
         currentTime += (targetTime - currentTime) * 0.12;
 
-        if (Math.abs(targetTime - currentTime) > 0.01) {
+        if (video.readyState >= 2) {
             video.currentTime = currentTime;
+        }
+
+        if (Math.abs(targetTime - currentTime) > 0.01) {
             requestAnimationFrame(animateVideo);
         } else {
-            video.currentTime = targetTime;
+            if (video.readyState >= 2) {
+                video.currentTime = targetTime;
+            }
             ticking = false;
         }
     }
@@ -392,6 +399,9 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     video.addEventListener("loadedmetadata", function () {
+        video.pause();
+        currentTime = 0;
+        targetTime = 0;
         updateTargetTime();
     });
 });
