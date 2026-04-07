@@ -337,26 +337,46 @@ document.addEventListener("DOMContentLoaded", function () {
     const video = document.getElementById("scrollVideo");
     const section = document.getElementById("scrollVideoSection");
 
-    if (!video || !section) {
-        console.log("Scroll video elements not found");
-        return;
-    }
+    if (!video || !section) return;
 
-    function updateVideoOnScroll() {
+    let targetTime = 0;
+    let currentTime = 0;
+    let ticking = false;
+
+    function updateTargetTime() {
         const rect = section.getBoundingClientRect();
-        const sectionHeight = section.offsetHeight - window.innerHeight;
+        const maxScroll = section.offsetHeight - window.innerHeight;
 
-        let progress = -rect.top / sectionHeight;
+        let progress = -rect.top / maxScroll;
         progress = Math.max(0, Math.min(progress, 1));
 
         if (video.duration) {
-            video.currentTime = video.duration * progress;
+            targetTime = video.duration * progress;
         }
     }
 
-    video.addEventListener("loadedmetadata", function () {
-        updateVideoOnScroll();
+    function animateVideo() {
+        currentTime += (targetTime - currentTime) * 0.12;
+
+        if (Math.abs(targetTime - currentTime) > 0.01) {
+            video.currentTime = currentTime;
+            requestAnimationFrame(animateVideo);
+        } else {
+            video.currentTime = targetTime;
+            ticking = false;
+        }
+    }
+
+    window.addEventListener("scroll", function () {
+        updateTargetTime();
+
+        if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(animateVideo);
+        }
     });
 
-    window.addEventListener("scroll", updateVideoOnScroll);
+    video.addEventListener("loadedmetadata", function () {
+        updateTargetTime();
+    });
 });

@@ -3832,9 +3832,14 @@ s @media (max-width: 768px) {
     overflow: hidden;
 }
 
+
+
 #scrollVideo {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
+    will-change: transform;
+    transform: translateZ(0);
+    backface-visibility: hidden;
 }
