@@ -261,7 +261,7 @@ if (clientPills.length > 0) {
 }
 
 // --- REVIEWS CAROUSEL ---
-(function() {
+(function () {
     const track = document.getElementById('reviewsTrack');
     const dotsContainer = document.getElementById('revDots');
     const prevBtn = document.getElementById('revPrev');
@@ -285,7 +285,7 @@ if (clientPills.length > 0) {
         current = Math.max(0, Math.min(idx, total - 1));
         const cardWidth = cards[0].offsetWidth + 24;
         track.style.transform = 'translateX(-' + (current * perView * cardWidth) + 'px)';
-        dotsContainer.querySelectorAll('.rev-dot').forEach(function(d, i) {
+        dotsContainer.querySelectorAll('.rev-dot').forEach(function (d, i) {
             d.classList.toggle('active', i === current);
         });
     }
@@ -293,29 +293,29 @@ if (clientPills.length > 0) {
     prevBtn && prevBtn.addEventListener('click', () => goTo(current - 1));
     nextBtn && nextBtn.addEventListener('click', () => goTo(current + 1));
 
-    window.addEventListener('resize', function() {
+    window.addEventListener('resize', function () {
         perView = window.innerWidth <= 600 ? 1 : window.innerWidth <= 900 ? 2 : 3;
         goTo(0);
     });
 })();
 
 // --- STAR PICKER ---
-(function() {
+(function () {
     const select = document.getElementById('starSelect');
     if (!select) return;
     let selected = 0;
     const stars = select.querySelectorAll('span');
 
-    stars.forEach(function(star, i) {
-        star.addEventListener('mouseenter', function() {
-            stars.forEach(function(s, j) { s.classList.toggle('hovered', j <= i); });
+    stars.forEach(function (star, i) {
+        star.addEventListener('mouseenter', function () {
+            stars.forEach(function (s, j) { s.classList.toggle('hovered', j <= i); });
         });
-        star.addEventListener('mouseleave', function() {
-            stars.forEach(function(s) { s.classList.remove('hovered'); });
+        star.addEventListener('mouseleave', function () {
+            stars.forEach(function (s) { s.classList.remove('hovered'); });
         });
-        star.addEventListener('click', function() {
+        star.addEventListener('click', function () {
             selected = i + 1;
-            stars.forEach(function(s, j) { s.classList.toggle('active', j < selected); });
+            stars.forEach(function (s, j) { s.classList.toggle('active', j < selected); });
         });
     });
 })();
@@ -327,9 +327,36 @@ function submitReview(e) {
     if (success) {
         success.classList.add('visible');
         e.target.reset();
-        document.querySelectorAll('#starSelect span').forEach(function(s) {
+        document.querySelectorAll('#starSelect span').forEach(function (s) {
             s.classList.remove('active', 'hovered');
         });
-        setTimeout(function() { success.classList.remove('visible'); }, 5000);
+        setTimeout(function () { success.classList.remove('visible'); }, 5000);
     }
 }
+document.addEventListener("DOMContentLoaded", function () {
+    const video = document.getElementById("scrollVideo");
+    const section = document.getElementById("scrollVideoSection");
+
+    if (!video || !section) {
+        console.log("Scroll video elements not found");
+        return;
+    }
+
+    function updateVideoOnScroll() {
+        const rect = section.getBoundingClientRect();
+        const sectionHeight = section.offsetHeight - window.innerHeight;
+
+        let progress = -rect.top / sectionHeight;
+        progress = Math.max(0, Math.min(progress, 1));
+
+        if (video.duration) {
+            video.currentTime = video.duration * progress;
+        }
+    }
+
+    video.addEventListener("loadedmetadata", function () {
+        updateVideoOnScroll();
+    });
+
+    window.addEventListener("scroll", updateVideoOnScroll);
+});

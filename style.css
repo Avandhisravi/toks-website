@@ -3738,13 +3738,15 @@ s @media (max-width: 768px) {
     font-weight: 700;
     letter-spacing: 0.12em;
     font-family: 'Cinzel', serif;
-    font-size: 3rem; /* Moderately bigger */
+    font-size: 3rem;
+    /* Moderately bigger */
 }
 
 .contact-item {
     color: #000000;
     font-weight: 500;
-    font-size: 1.4rem; /* Significantly bigger */
+    font-size: 1.4rem;
+    /* Significantly bigger */
     margin-bottom: 15px;
     line-height: 1.6;
 }
@@ -3769,7 +3771,8 @@ s @media (max-width: 768px) {
     color: #000000;
     text-decoration: none;
     font-family: var(--font-body);
-    font-size: 1.1rem; /* Slightly bigger */
+    font-size: 1.1rem;
+    /* Slightly bigger */
     font-weight: 600;
     letter-spacing: 0.05em;
     transition: all 0.3s ease;
@@ -3814,4 +3817,24 @@ s @media (max-width: 768px) {
 
 .footer-dev-link:hover {
     color: var(--gold-light);
+}
+
+#scrollVideoSection {
+    position: relative;
+    height: 300vh;
+}
+
+#scrollSticky {
+    position: sticky;
+    top: 0;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#scrollVideo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
