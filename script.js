@@ -1,3 +1,13 @@
+﻿
+// --- LUXURY NAV SCROLL EFFECT ---
+window.addEventListener('scroll', () => {
+    const nav = document.querySelector('.luxury-nav');
+    if (window.scrollY > 100) {
+        nav.classList.add('scrolled');
+    } else {
+        nav.classList.remove('scrolled');
+    }
+}, { passive: true });
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
 // Reveal main content
@@ -53,6 +63,10 @@ if (timelinePath) {
         },
         ease: "none"
     }, 0);
+
+    // Car fade in/out sequence
+    timeline.fromTo("#timelineCar", { opacity: 0 }, { opacity: 1, duration: 0.05 }, 0);
+    timeline.to("#timelineCar", { opacity: 0, duration: 0.05 }, 0.95);
     // Removed ROAD PARALLAX to prevent gap at the bottom of the section.
 }
 
@@ -85,7 +99,7 @@ const divisionData = {
     },
     production: {
         title: "TOKS PRODUCTION",
-        logo: "Toks production.png",
+        logo: "pro trans.png",
         description: `<strong>Content That Builds Authority</strong><br><br>Toks Production is our creative powerhouse, delivering high-quality visual and digital content for businesses and personal brands. From cinematic videos to AI-powered content systems, we help clients communicate with clarity and impact.<br><br><strong>Core Services:</strong><br>Video Production & Editing<br>AI Avatar Content (Faceless/Personal Branding)<br>Commercial Shoots<br>Content Automation Systems`,
         instagram: "<br>@toksproduction",
         insta_url: "https://www.instagram.com/toksproduction/",
@@ -96,24 +110,26 @@ const divisionData = {
         title: "TOKS FOUNDATION",
         logo: "toks foundation.png",
         description: `<strong>Impact Beyond Business</strong><br><br>Toks Foundation is the social responsibility arm of the Toks ecosystem, focused on creating meaningful change through education, opportunities, and community-driven initiatives.<br><br>We aim to empower individuals by providing access to knowledge, resources, and support systems that help them build a better future.<br><br><strong>Focus Areas:</strong><br>Education Support<br>Skill Development<br>Community Outreach<br>Youth Empowerment`,
-        email: "<br>info@toksfoundation.com"
+        email: "<br>info@toksfoundation.com",
+        linkedin: "https://www.linkedin.com/company/toks-foundation/posts/?feedView=all"
     },
     finance: {
         title: "TOKS FINANCE",
-        logo: "toks finance.png",
+        logo: "fi.png",
         description: `<strong>Smart Capital. Strategic Growth.</strong><br><br>Toks Finance provides structured financial solutions for individuals and businesses. We focus on responsible lending, financial planning, and capital access designed to support growth and stability.<br><br><strong>Core Services:</strong><br>Business & Personal Lending<br>Financial Advisory<br>Capital Structuring<br>Investment Guidance`,
         email: "<br>info@toksfinance.com"
     },
     sureslot: {
         title: "SURESLOT",
-        logo: "sureslot.png",
+        logo: "slot.png",
         description: `<strong>Your Pathway to Global Education</strong><br><br>SureSlot simplifies the study abroad journey by connecting students with the right universities, programs, and opportunities worldwide. We provide end-to-end support to ensure a smooth transition from application to enrollment.<br><br><strong>Core Services:</strong><br>University Admissions<br>Visa Assistance<br>Career & Course Guidance<br>Application Processing`,
         email: "<br>info@sureslot.in",
         instagram: "<br>@sureslot",
         insta_url: "https://www.instagram.com/sure.slot/",
         contact: `<br>+91 85929 31642<br>
 +91 70123 67149<br>
-+91 98479 04076`
++91 98479 04076`,
+        linkedin: "https://www.linkedin.com/company/sureslot-pvt-ltd/posts/?feedView=all"
     },
     export: {
         title: "TOKS EXPORT",
@@ -144,6 +160,14 @@ function openMicrosite(divisionKey) {
         ig.href = data.insta_url || `https://instagram.com/${data.instagram.replace('@', '')}`;
     } else {
         ig.style.display = 'none';
+    }
+
+    const li = document.getElementById('detailLinkedin');
+    if (data.linkedin) {
+        li.style.display = 'block';
+        li.href = data.linkedin;
+    } else {
+        li.style.display = 'none';
     }
 
     const email = document.getElementById('detailEmail');
@@ -254,25 +278,21 @@ gsap.to(".rec-card", {
     }
 });
 
-// --- CLIENTELE MOSAIC ANIMATION ---
-const clientPills = gsap.utils.toArray('.gs-client-pill');
-if (clientPills.length > 0) {
-    gsap.set(clientPills, { opacity: 0, y: 30, scale: 0.92 });
-    ScrollTrigger.create({
-        trigger: ".client-mosaic",
-        start: "top 85%",
-        once: true,
-        onEnter: () => {
-            gsap.to(clientPills, {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                duration: 0.6,
-                stagger: 0.04,
-                ease: "power2.out"
-            });
+// --- LOGO MARQUEE ENTRANCE ---
+const marquee = document.querySelector('.logo-marquee-wrapper');
+if (marquee) {
+    gsap.fromTo(marquee,
+        { opacity: 0, y: 60, filter: 'blur(10px)' },
+        {
+            opacity: 1, y: 0, filter: 'blur(0px)',
+            duration: 1.5,
+            ease: "power4.out",
+            scrollTrigger: {
+                trigger: marquee,
+                start: "top 90%",
+            }
         }
-    });
+    );
 }
 
 // --- REVIEWS CAROUSEL ---
@@ -370,16 +390,22 @@ document.addEventListener("DOMContentLoaded", function () {
         if (video.duration && isFinite(video.duration)) {
             targetTime = video.duration * progress;
         }
+
+        if (!ticking) {
+            ticking = true;
+            requestAnimationFrame(animateVideo);
+        }
     }
 
     function animateVideo() {
-        currentTime += (targetTime - currentTime) * 0.12;
+        // Increased factor for snappier response (was 0.1)
+        currentTime += (targetTime - currentTime) * 0.25;
 
         if (video.readyState >= 2) {
             video.currentTime = currentTime;
         }
 
-        if (Math.abs(targetTime - currentTime) > 0.01) {
+        if (Math.abs(targetTime - currentTime) > 0.001) {
             requestAnimationFrame(animateVideo);
         } else {
             if (video.readyState >= 2) {
@@ -389,46 +415,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    window.addEventListener("scroll", function () {
+    window.addEventListener("scroll", updateTargetTime, { passive: true });
+    video.addEventListener("loadedmetadata", updateTargetTime);
+
+    // Initial update
+    if (video.readyState >= 1) {
         updateTargetTime();
-
-        if (!ticking) {
-            ticking = true;
-            requestAnimationFrame(animateVideo);
-        }
-    });
-
-    video.addEventListener("loadedmetadata", function () {
-        video.pause();
-        currentTime = 0;
-        targetTime = 0;
-        updateTargetTime();
-    });
-});
-document.addEventListener("DOMContentLoaded", function () {
-    const video = document.getElementById("scrollVideo");
-    const section = document.getElementById("scrollVideoSection");
-
-    if (!video || !section) {
-        console.log("Scroll video elements not found");
-        return;
     }
-
-    function updateVideoOnScroll() {
-        const rect = section.getBoundingClientRect();
-        const sectionHeight = section.offsetHeight - window.innerHeight;
-
-        let progress = -rect.top / sectionHeight;
-        progress = Math.max(0, Math.min(progress, 1));
-
-        if (video.duration) {
-            video.currentTime = video.duration * progress;
-        }
-    }
-
-    video.addEventListener("loadedmetadata", function () {
-        updateVideoOnScroll();
-    });
-
-    window.addEventListener("scroll", updateVideoOnScroll);
 });
