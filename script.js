@@ -1,4 +1,4 @@
-﻿
+
 // --- LUXURY NAV SCROLL EFFECT ---
 window.addEventListener('scroll', () => {
     const nav = document.querySelector('.luxury-nav');
@@ -13,6 +13,152 @@ gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 // Reveal main content
 gsap.set("#main-content", { autoAlpha: 1 });
 
+// --- CINEMATIC HERO SCROLL ANIMATION ---
+const heroImg = document.querySelector('.hero-gg-img');
+const heroSection = document.querySelector('.premium-hero');
+const heroMainVisual = document.querySelector('.hero-main-visual');
+const imageGlow = document.querySelector('.image-glow');
+const heroIndicator = document.querySelector('.hero-scroll-indicator');
+const heroBgLayer = document.querySelector('.hero-bg-layer');
+const heroFlash = document.querySelector('.hero-radial-flash');
+const heroOrbits = document.querySelectorAll('.hero-orbit');
+const heroDust1 = document.querySelector('.hero-dust-1');
+const heroDust2 = document.querySelector('.hero-dust-2');
+const heroBurst = document.querySelector('.hero-burst');
+const legacySection = document.querySelector('.legacy');
+
+function createHeroBurstParticles() {
+    if (!heroBurst) return;
+    heroBurst.innerHTML = "";
+
+    const particleCount = 42;
+
+    for (let i = 0; i < particleCount; i++) {
+        const p = document.createElement("span");
+        p.className = "burst-particle";
+
+        if (i % 7 === 0) p.classList.add("thin");
+        if (i % 5 === 0) p.classList.add("soft");
+
+        const angle = Math.random() * Math.PI * 2;
+        const distance = 140 + Math.random() * 260;
+        const driftX = Math.cos(angle) * distance;
+        const driftY = Math.sin(angle) * distance;
+        const driftRotate = -180 + Math.random() * 360;
+        const driftScale = 0.4 + Math.random() * 1.8;
+        const size = 4 + Math.random() * 12;
+        const blur = Math.random() * 3;
+
+        p.style.setProperty("--size", `${size}px`);
+        p.style.setProperty("--blur", `${blur}px`);
+        p.dataset.dx = driftX;
+        p.dataset.dy = driftY;
+        p.dataset.rot = driftRotate;
+        p.dataset.scale = driftScale;
+
+        heroBurst.appendChild(p);
+    }
+
+    gsap.set(".burst-particle", {
+        x: 0,
+        y: 0,
+        rotation: 0,
+        scale: 0.2,
+        opacity: 0
+    });
+}
+
+createHeroBurstParticles();
+
+if (heroImg && heroSection && heroMainVisual) {
+    gsap.set(heroMainVisual, { scale: 1, rotationX: 0, rotationY: 0, z: 0, opacity: 1 });
+    gsap.set(heroImg, { scale: 1, yPercent: 0, opacity: 1 });
+    gsap.set(imageGlow, { scale: 1, opacity: 0 });
+    gsap.set(heroIndicator, { opacity: 1, y: 0 });
+    gsap.set(heroBgLayer, { scale: 1, opacity: 0 });
+    gsap.set(heroFlash, { opacity: 0, scale: 0.7 });
+    gsap.set(heroOrbits, { scale: 0.8, opacity: 0 });
+    gsap.set([heroDust1, heroDust2], { opacity: 0, y: 40 });
+
+    const heroIntro = gsap.timeline();
+    heroIntro
+        .to(heroMainVisual, {
+            scale: 1,
+            rotationX: 0,
+            rotationY: 0,
+            z: 0,
+            opacity: 1,
+            duration: 1.8,
+            ease: "expo.out"
+        })
+        .to(heroImg, {
+            scale: 1,
+            yPercent: 0,
+            opacity: 1,
+            filter: "drop-shadow(0 0 24px rgba(166,138,86,0.22)) drop-shadow(0 24px 80px rgba(0,0,0,0.6))",
+            duration: 1.8,
+            ease: "expo.out"
+        }, 0)
+        .to(imageGlow, {
+            scale: 1,
+            opacity: 1,
+            duration: 1.8,
+            ease: "expo.out"
+        }, 0.1)
+        .to(heroOrbits, {
+            scale: 1,
+            opacity: (i) => i === 0 ? 0.45 : 0.22,
+            duration: 2,
+            stagger: 0.08,
+            ease: "power3.out"
+        }, 0.25)
+        .to([heroDust1, heroDust2], {
+            opacity: 0.35,
+            y: 0,
+            duration: 1.6,
+            stagger: 0.12,
+            ease: "power2.out"
+        }, 0.35);
+
+    const heroTl = gsap.timeline({
+        scrollTrigger: {
+            trigger: heroSection,
+            start: "top top",
+            end: "bottom top",
+            scrub: 1.2
+        }
+    });
+
+    // New cinematic logo scroll animation
+    heroTl
+        .to(heroImg, {
+            scale: 2.5,
+            opacity: 0,
+            ease: "none"
+        }, 0)
+        .to(heroIndicator, {
+            opacity: 0,
+            y: 30,
+            ease: "none"
+        }, 0);
+
+    if (legacySection) {
+        gsap.fromTo(legacySection,
+            { opacity: 0, y: 120 },
+            {
+                opacity: 1,
+                y: 0,
+                ease: "power3.out",
+                scrollTrigger: {
+                    trigger: heroSection,
+                    start: "70% top",
+                    end: "bottom top",
+                    scrub: 1
+                }
+            }
+        );
+    }
+}
 // --- PREMIUM ABOUT REVEAL ---
 gsap.fromTo(".legacy-title .line",
     {
@@ -38,7 +184,8 @@ if (timelinePath) {
     const pathLength = timelinePath.getTotalLength();
     gsap.set(".animated-line, .road-glow-path", { strokeDasharray: pathLength, strokeDashoffset: pathLength });
 
-    const timeline = gsap.timeline({
+    // Road line draws in sync with the full section scroll
+    const roadTimeline = gsap.timeline({
         scrollTrigger: {
             trigger: ".process-timeline",
             start: "top top",
@@ -46,28 +193,33 @@ if (timelinePath) {
             scrub: 1
         }
     });
+    roadTimeline.to(".animated-line, .road-glow-path", { strokeDashoffset: 0, ease: "none" }, 0);
 
-    timeline.to(".animated-line, .road-glow-path", { strokeDashoffset: 0, ease: "none" }, 0);
+    // Car setup — always visible, centered on path
     gsap.set("#timelineCar", {
         xPercent: -50,
         yPercent: -50,
-        transformOrigin: "50% 50%"
+        transformOrigin: "50% 50%",
+        opacity: 1
     });
 
-    timeline.to("#timelineCar", {
+    // Car uses IDENTICAL ScrollTrigger as the gold road line so it always
+    // sits exactly at the tip of the drawn line — perfectly in sync.
+    gsap.to("#timelineCar", {
         motionPath: {
             path: "#timelinePath",
             align: "#timelinePath",
             alignOrigin: [0.5, 0.5],
             autoRotate: true
         },
-        ease: "none"
-    }, 0);
-
-    // Car fade in/out sequence
-    timeline.fromTo("#timelineCar", { opacity: 0 }, { opacity: 1, duration: 0.05 }, 0);
-    timeline.to("#timelineCar", { opacity: 0, duration: 0.05 }, 0.95);
-    // Removed ROAD PARALLAX to prevent gap at the bottom of the section.
+        ease: "none",
+        scrollTrigger: {
+            trigger: ".process-timeline",
+            start: "top top",
+            end: "bottom bottom",
+            scrub: 1
+        }
+    });
 }
 
 // Reveal steps relative to the timeline path
@@ -90,8 +242,8 @@ gsap.utils.toArray('.process-step').forEach((step, i) => {
 const divisionData = {
     marketing: {
         title: "TOKS MARKETING",
-        logo: "toks marketing.png",
-        description: `<strong>Growth Engine for Modern Brands</strong><br><br>Toks Marketing is a results-driven marketing division focused on helping brands scale through strategic digital presence, performance marketing, and content systems. We specialize in building strong brand identities, generating high-quality leads, and creating scalable marketing frameworks.<br><br><strong>Core Services:</strong><br>Performance Marketing (Ads & Funnels)<br>Social Media Growth<br>Brand Strategy & Positioning<br>Lead Generation Systems`,
+        logo: "tmar.jpeg",
+        description: `<strong>Growth Engine for Modern Brands</strong><br><br>Toks Marketing is the strategic growth division of the Toks ecosystem, built to scale brands through precision-driven marketing systems.<br><br>We integrate performance marketing, brand strategy, and content infrastructure to create predictable, compounding growth. Every initiative is designed with one objective—measurable business impact.<br><br>We don’t operate as a service provider. We function as a growth partner—engineering acquisition systems, strengthening market positioning, and optimizing revenue pipelines.<br><br><strong>Core Capabilities:</strong><br>Performance Marketing & Conversion Funnels<br>Social Media Growth Architecture<br>Brand Strategy & Market Positioning<br>Lead Generation & Acquisition Systems`,
         instagram: "<br>@toks_marketing",
         insta_url: "https://www.instagram.com/toks_marketing/",
         email: "<br>info@toksmarketing.com",
@@ -100,7 +252,7 @@ const divisionData = {
     production: {
         title: "TOKS PRODUCTION",
         logo: "pro trans.png",
-        description: `<strong>Content That Builds Authority</strong><br><br>Toks Production is our creative powerhouse, delivering high-quality visual and digital content for businesses and personal brands. From cinematic videos to AI-powered content systems, we help clients communicate with clarity and impact.<br><br><strong>Core Services:</strong><br>Video Production & Editing<br>AI Avatar Content (Faceless/Personal Branding)<br>Commercial Shoots<br>Content Automation Systems`,
+        description: `<strong>Content That Builds Authority</strong><br><br>Toks Production is the creative division of the Toks ecosystem, built to produce high-impact visual and digital content at scale.<br><br>We combine cinematic production, strategic storytelling, and AI-driven systems to create content that doesn’t just look good—but positions brands, builds authority, and drives engagement.<br><br>From flagship brand films to automated content pipelines, every asset is engineered for clarity, consistency, and influence.<br><br><strong>Core Capabilities:</strong><br>Cinematic Video Production & Post-Production<br>AI Avatar Content Systems (Faceless & Personal Branding)<br>Commercial & Brand Shoots<br>Content Automation & Scalable Distribution Systems`,
         instagram: "<br>@toksproduction",
         insta_url: "https://www.instagram.com/toksproduction/",
         email: "<br>info@toksproducation.com",
@@ -115,13 +267,13 @@ const divisionData = {
     },
     finance: {
         title: "TOKS FINANCE",
-        logo: "fi.png",
+        logo: "toks finance.png",
         description: `<strong>Smart Capital. Strategic Growth.</strong><br><br>Toks Finance provides structured financial solutions for individuals and businesses. We focus on responsible lending, financial planning, and capital access designed to support growth and stability.<br><br><strong>Core Services:</strong><br>Business & Personal Lending<br>Financial Advisory<br>Capital Structuring<br>Investment Guidance`,
         email: "<br>info@toksfinance.com"
     },
     sureslot: {
         title: "SURESLOT",
-        logo: "slot.png",
+        logo: "sureslot.png",
         description: `<strong>Your Pathway to Global Education</strong><br><br>SureSlot simplifies the study abroad journey by connecting students with the right universities, programs, and opportunities worldwide. We provide end-to-end support to ensure a smooth transition from application to enrollment.<br><br><strong>Core Services:</strong><br>University Admissions<br>Visa Assistance<br>Career & Course Guidance<br>Application Processing`,
         email: "<br>info@sureslot.in",
         instagram: "<br>@sureslot",
@@ -133,7 +285,7 @@ const divisionData = {
     },
     export: {
         title: "TOKS EXPORT",
-        logo: "toks export .png",
+        logo: "toks export.png",
         description: `<strong>Connecting Markets Globally</strong><br><br>Toks Export is dedicated to sourcing and delivering high-quality products across international markets. We focus on building reliable trade partnerships and ensuring seamless export operations with global standards.<br><br><strong>Core Services:</strong><br>Product Sourcing<br>International Trade Management<br>Logistics Coordination<br>Supplier Network Development`,
         email: "<br>info@toksexport.com"
     }
@@ -155,7 +307,7 @@ function openMicrosite(divisionKey) {
     // Update Sidebar Cards
     const ig = document.getElementById('detailInstagram');
     if (data.instagram) {
-        ig.style.display = 'block';
+        ig.style.display = 'flex';
         ig.querySelector('.meta-value').innerHTML = data.instagram;
         ig.href = data.insta_url || `https://instagram.com/${data.instagram.replace('@', '')}`;
     } else {
@@ -164,7 +316,7 @@ function openMicrosite(divisionKey) {
 
     const li = document.getElementById('detailLinkedin');
     if (data.linkedin) {
-        li.style.display = 'block';
+        li.style.display = 'flex';
         li.href = data.linkedin;
     } else {
         li.style.display = 'none';
@@ -177,7 +329,7 @@ function openMicrosite(divisionKey) {
     // Update Contact Card
     const contactCard = document.getElementById('detailContact');
     if (data.contact) {
-        contactCard.style.display = 'block';
+        contactCard.style.display = 'flex';
         contactCard.querySelector('.meta-value').innerHTML = data.contact;
     } else {
         contactCard.style.display = 'none';
@@ -278,23 +430,6 @@ gsap.to(".rec-card", {
     }
 });
 
-// --- LOGO MARQUEE ENTRANCE ---
-const marquee = document.querySelector('.logo-marquee-wrapper');
-if (marquee) {
-    gsap.fromTo(marquee,
-        { opacity: 0, y: 60, filter: 'blur(10px)' },
-        {
-            opacity: 1, y: 0, filter: 'blur(0px)',
-            duration: 1.5,
-            ease: "power4.out",
-            scrollTrigger: {
-                trigger: marquee,
-                start: "top 90%",
-            }
-        }
-    );
-}
-
 // --- REVIEWS CAROUSEL ---
 (function () {
     const track = document.getElementById('reviewsTrack');
@@ -368,58 +503,82 @@ function submitReview(e) {
         setTimeout(function () { success.classList.remove('visible'); }, 5000);
     }
 }
-document.addEventListener("DOMContentLoaded", function () {
-    const video = document.getElementById("scrollVideo");
-    const section = document.getElementById("scrollVideoSection");
 
-    if (!video || !section) return;
+// --- COLLABORATORS ANIMATION (Cinematic & Parallax) ---
+const collabSection = document.getElementById('collaborators');
+if (collabSection) {
+    const collabItems = collabSection.querySelectorAll('.logo-item');
 
-    let targetTime = 0;
-    let currentTime = 0;
-    let ticking = false;
+    // Set initial state explicitly
+    gsap.set(collabItems, { opacity: 0, y: 50 });
 
-    function updateTargetTime() {
-        const rect = section.getBoundingClientRect();
-        const maxScroll = section.offsetHeight - window.innerHeight;
-
-        if (maxScroll <= 0) return;
-
-        let progress = -rect.top / maxScroll;
-        progress = Math.max(0, Math.min(progress, 1));
-
-        if (video.duration && isFinite(video.duration)) {
-            targetTime = video.duration * progress;
+    // Scroll-triggered Stagger Reveal
+    gsap.to(collabItems, {
+        y: 0,
+        opacity: 1,
+        duration: 1,
+        stagger: 0.1,
+        ease: "power3.out",
+        scrollTrigger: {
+            trigger: collabSection,
+            start: "top 80%",
         }
+    });
 
-        if (!ticking) {
-            ticking = true;
-            requestAnimationFrame(animateVideo);
+    // Parallax Mouse Depth (GPU-Accelerated)
+    collabSection.addEventListener('mousemove', (e) => {
+        const rect = collabSection.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+
+        collabItems.forEach((item) => {
+            const rotateX = -y * 0.015;
+            const rotateY = x * 0.015;
+
+            // Use overwrite: "auto" to prevent tween conflicts
+            gsap.to(item, {
+                rotationX: rotateX,
+                rotationY: rotateY,
+                duration: 0.5,
+                ease: "power2.out",
+                transformPerspective: 1000,
+                overwrite: "auto"
+            });
+        });
+    });
+
+    collabSection.addEventListener('mouseleave', () => {
+        gsap.to(collabItems, {
+            rotationX: 0,
+            rotationY: 0,
+            duration: 0.8,
+            ease: "power2.out",
+            overwrite: "auto"
+        });
+    });
+
+    // Ambient Particle Effects
+    const bgContainer = collabSection.querySelector('.clientele-bg');
+    if (bgContainer) {
+        for (let i = 0; i < 25; i++) {
+            let particle = document.createElement('div');
+            particle.classList.add('collaborator-particle');
+            let size = Math.random() * 5 + 2;
+            particle.style.width = size + 'px';
+            particle.style.height = size + 'px';
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            bgContainer.appendChild(particle);
+
+            gsap.to(particle, {
+                y: "-=150",
+                x: (Math.random() > 0.5 ? "+=" : "-=") + (Math.random() * 50),
+                opacity: 0,
+                duration: Math.random() * 6 + 4,
+                repeat: -1,
+                ease: "none",
+                delay: Math.random() * 5
+            });
         }
     }
-
-    function animateVideo() {
-        // Increased factor for snappier response (was 0.1)
-        currentTime += (targetTime - currentTime) * 0.25;
-
-        if (video.readyState >= 2) {
-            video.currentTime = currentTime;
-        }
-
-        if (Math.abs(targetTime - currentTime) > 0.001) {
-            requestAnimationFrame(animateVideo);
-        } else {
-            if (video.readyState >= 2) {
-                video.currentTime = targetTime;
-            }
-            ticking = false;
-        }
-    }
-
-    window.addEventListener("scroll", updateTargetTime, { passive: true });
-    video.addEventListener("loadedmetadata", updateTargetTime);
-
-    // Initial update
-    if (video.readyState >= 1) {
-        updateTargetTime();
-    }
-});
+}
