@@ -95,9 +95,9 @@ if (heroImg && heroSection && heroMainVisual) {
             scale: 1,
             yPercent: 0,
             opacity: 1,
-            filter: "drop-shadow(0 0 24px rgba(166,138,86,0.22)) drop-shadow(0 24px 80px rgba(0,0,0,0.6))",
             duration: 1.8,
-            ease: "expo.out"
+            ease: "expo.out",
+            force3D: true
         }, 0)
         .to(imageGlow, {
             scale: 1,
@@ -134,12 +134,14 @@ if (heroImg && heroSection && heroMainVisual) {
         .to(heroImg, {
             scale: 2.5,
             opacity: 0,
-            ease: "none"
+            ease: "none",
+            force3D: true
         }, 0)
         .to(heroIndicator, {
             opacity: 0,
             y: 30,
-            ease: "none"
+            ease: "none",
+            force3D: true
         }, 0);
 
     if (legacySection) {
@@ -532,8 +534,8 @@ if (collabSection) {
         const y = e.clientY - rect.top - rect.height / 2;
 
         collabItems.forEach((item) => {
-            const rotateX = -y * 0.015;
-            const rotateY = x * 0.015;
+            const rotateX = -y * 0.04;
+            const rotateY = x * 0.04;
 
             // Use overwrite: "auto" to prevent tween conflicts
             gsap.to(item, {
