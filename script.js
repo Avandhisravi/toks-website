@@ -10,8 +10,9 @@ window.addEventListener('scroll', () => {
 }, { passive: true });
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
-// Reveal main content
-gsap.set("#main-content", { autoAlpha: 1 });
+// --- MOBILE DETECTION ---
+const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
 
 // --- CINEMATIC HERO SCROLL ANIMATION ---
 const heroImg = document.querySelector('.hero-gg-img');
@@ -162,27 +163,30 @@ if (heroImg && heroSection && heroMainVisual) {
     }
 }
 // --- PREMIUM ABOUT REVEAL ---
-gsap.fromTo(".legacy-title .line",
-    {
-        y: 80,
-        opacity: 0
-    },
-    {
-        y: 0,
-        opacity: 1,
-        duration: 0.6,
-        stagger: 0.15,
-        ease: "power3.out",
-        scrollTrigger: {
-            trigger: ".legacy",
-            start: "top 85%"
-        }
-    });
+if (!isMobile) {
+    gsap.fromTo(".legacy-title .line",
+        { y: 80, opacity: 0 },
+        {
+            y: 0,
+            opacity: 1,
+            duration: 0.6,
+            stagger: 0.15,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: ".legacy",
+                start: "top 85%"
+            }
+        });
+} else {
+    // On mobile: instantly show everything in the about section
+    gsap.set(".legacy-title .line, .reveal-block, .reveal-divider", { y: 0, opacity: 1 });
+}
+
 
 
 // --- PROCESS TIMELINE (ROAD & CAR) ---
 const timelinePath = document.getElementById('timelinePath');
-if (timelinePath) {
+if (timelinePath && !isMobile) {
     const pathLength = timelinePath.getTotalLength();
     gsap.set(".animated-line, .road-glow-path", { strokeDasharray: pathLength, strokeDashoffset: pathLength });
 
@@ -222,23 +226,35 @@ if (timelinePath) {
             scrub: 1
         }
     });
+} else if (isMobile) {
+    // On mobile: hide the SVG road/car entirely (flowchart CSS takes over)
+    const roadWrapper = document.getElementById('roadWrapper');
+    if (roadWrapper) roadWrapper.style.display = 'none';
+    const car = document.getElementById('timelineCar');
+    if (car) car.style.display = 'none';
 }
 
-// Reveal steps relative to the timeline path
-gsap.utils.toArray('.process-step').forEach((step, i) => {
-    gsap.fromTo(step,
-        { opacity: 0, y: 100, filter: 'blur(15px)' },
-        {
-            opacity: 1, y: 0, filter: 'blur(0px)',
-            duration: 1, ease: 'power3.out',
-            scrollTrigger: {
-                trigger: step,
-                start: 'top 85%',
-                toggleActions: 'play none none reverse'
+// Reveal steps — desktop only
+if (!isMobile) {
+    gsap.utils.toArray('.process-step').forEach((step, i) => {
+        gsap.fromTo(step,
+            { opacity: 0, y: 100, filter: 'blur(15px)' },
+            {
+                opacity: 1, y: 0, filter: 'blur(0px)',
+                duration: 1, ease: 'power3.out',
+                scrollTrigger: {
+                    trigger: step,
+                    start: 'top 85%',
+                    toggleActions: 'play none none reverse'
+                }
             }
-        }
-    );
-});
+        );
+    });
+} else {
+    // Instantly show all steps on mobile
+    gsap.set('.process-step', { opacity: 1, y: 0, filter: 'none' });
+}
+
 
 // --- UPGRADED CINEMATIC EDITORIAL MICROSITE ---
 const divisionData = {
@@ -290,6 +306,15 @@ const divisionData = {
         logo: "toks export.png",
         description: `<strong>Connecting Markets Globally</strong><br><br>Toks Export is dedicated to sourcing and delivering high-quality products across international markets. We focus on building reliable trade partnerships and ensuring seamless export operations with global standards.<br><br><strong>Core Services:</strong><br>Product Sourcing<br>International Trade Management<br>Logistics Coordination<br>Supplier Network Development`,
         email: "<br>info@toksexport.com"
+    },
+    syino: {
+        title: "Syino C. Mathew",
+        logo: "synio.jpeg",
+        description: `<strong>About Syino C. Mathew</strong><br><br>Syino C. Mathew is an internationally recognized AI marketing strategist, entrepreneur, TEDx speaker, and digital innovation leader from Kerala, India. With over seven years of experience in AI-powered branding, automation, digital marketing, and business growth, he has built a reputation for helping startups and businesses scale through cutting-edge AI systems and strategic marketing execution.<br><br>As the Founder & CEO of Toks Enterprise, Syino has led thousands of branding and marketing projects, combining artificial intelligence, automation, storytelling, and performance marketing to create scalable business ecosystems for entrepreneurs and companies worldwide.<br><br>Featured in international media platforms including Forbes, TEDx Magazine, and multiple global entrepreneurship publications, Syino is widely recognized for his innovative approach to AI-driven business transformation and digital branding.<br><br><strong>Global Recognition & Achievements</strong><br>• World Record Holder for serving 9,992+ clients between 2023–2024 through branding, AI marketing, and startup support initiatives.<br>• Achieved a National Talent Record for designing and delivering 353+ startup logos exclusively for emerging businesses using AI-assisted systems.<br>• Officially recognized by the Kerala Book of Records for creating the Largest YouTube Icon Using Plastic Bottles, promoting environmental sustainability through creative innovation.<br>• Received official appreciation from the Royal Court of Belgium for entrepreneurial excellence and international contributions to innovation.<br>• Honored with the title of AI Marketing Grandmaster by the International Artificial Intelligence Federation (IAIF), USA.<br>• Became the first South Asian member of the Global AI Sovereign Circle (GASC).<br>• Awarded recognition at the Australian Innovation Awards 2026 for contributions to AI-powered business solutions and digital transformation.<br><br><strong>Leadership & Vision</strong><br><br>Syino is known for building futuristic AI-focused initiatives designed to make advanced marketing systems accessible to startups and businesses.<br><br><strong>Project Starseed</strong><br>An AI-powered branding ecosystem focused on making professional marketing affordable, scalable, and accessible for startups, entrepreneurs, and growing businesses.<br><br><strong>Project Nova Imprium</strong><br>Recognized as Kerala’s first AI-driven commercial advertising model integrating automation, AI storytelling, content generation, and modern advertising frameworks.<br><br><strong>Conquer Content</strong><br>An AI video production and content automation initiative helping entrepreneurs, coaches, and brands scale visibility through AI-generated content systems without relying heavily on traditional production models.<br><br><strong>AI Advocacy & Education</strong><br>Beyond entrepreneurship, Syino actively advocates for AI education, ethical AI adoption, and digital transformation. Through workshops, speaking engagements, and awareness initiatives, he promotes the responsible integration of artificial intelligence into business, education, and creative industries.<br><br><strong>His work focuses on:</strong><br>• AI-powered branding<br>• Automation systems<br>• Business scaling<br>• Performance marketing<br>• AI content creation<br>• Startup ecosystem development<br>• Sustainable innovation<br><br>By combining technology, creativity, and entrepreneurship, Syino C. Mathew continues to position himself as one of the emerging AI-driven business innovators from South Asia.`,
+        instagram: "<br>@syinocmathew",
+        insta_url: "https://www.instagram.com/syinocmathew/",
+        linkedin: "https://www.linkedin.com/in/syino-c-mathew-264a281ba/",
+        email: "<br>info@toksenterprise.com"
     }
 };
 
@@ -302,7 +327,20 @@ function openMicrosite(divisionKey) {
     if (!data) return;
 
     // Set Data
-    document.getElementById('detailLogo').src = data.logo;
+    const contentWrap = document.querySelector('.division-detail-content');
+    const logoImg = document.getElementById('detailLogo');
+    logoImg.src = data.logo;
+    if (divisionKey === 'syino') {
+        logoImg.style.maxHeight = '280px';
+        logoImg.style.borderRadius = '24px';
+        logoImg.style.objectFit = 'cover';
+        contentWrap.classList.add('person-layout');
+    } else {
+        logoImg.style.maxHeight = '';
+        logoImg.style.borderRadius = '';
+        logoImg.style.objectFit = '';
+        contentWrap.classList.remove('person-layout');
+    }
     document.getElementById('detailTitle').textContent = data.title;
     document.getElementById('detailDescription').innerHTML = data.description;
 
@@ -408,18 +446,25 @@ document.addEventListener('keydown', (e) => {
 });
 
 // --- RECOGNITION CARDS ANIMATION ---
-gsap.from(".gs-reveal-card", {
-    y: 80,
-    opacity: 0,
-    scale: 0.95,
-    duration: 1.2,
-    stagger: 0.12,
-    ease: "power3.out",
-    scrollTrigger: {
-        trigger: ".recognition-dossier",
-        start: "top 70%",
+gsap.fromTo(".gs-reveal-card", 
+    {
+        y: 80,
+        opacity: 0,
+        scale: 0.95
+    },
+    {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 1.2,
+        stagger: 0.12,
+        ease: "power3.out",
+        scrollTrigger: {
+            trigger: ".recognition-dossier",
+            start: "top 70%",
+        }
     }
-});
+);
 gsap.to(".rec-card", {
     y: -10,
     duration: 2,
@@ -431,6 +476,51 @@ gsap.to(".rec-card", {
         from: "random"
     }
 });
+
+// --- GENERIC REVEAL SYSTEM ---
+if (!isMobile) {
+    gsap.utils.toArray('.gs-reveal').forEach(el => {
+        gsap.fromTo(el, 
+            { y: 40, opacity: 0 },
+            {
+                scrollTrigger: {
+                    trigger: el,
+                    start: "top 88%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power3.out"
+            }
+        );
+    });
+} else {
+    gsap.set('.gs-reveal', { y: 0, opacity: 1 });
+}
+
+// --- DIVISIONS REVEAL ---
+if (!isMobile) {
+    gsap.utils.toArray('.division-row').forEach((row, i) => {
+        gsap.fromTo(row, 
+            { y: 60, opacity: 0 },
+            {
+                scrollTrigger: {
+                    trigger: row,
+                    start: "top 85%",
+                    toggleActions: "play none none reverse"
+                },
+                y: 0,
+                opacity: 1,
+                duration: 1.2,
+                ease: "power3.out"
+            }
+        );
+    });
+} else {
+    gsap.set('.division-row', { y: 0, opacity: 1 });
+}
+
 
 // --- REVIEWS CAROUSEL ---
 (function () {
@@ -511,53 +601,57 @@ const collabSection = document.getElementById('collaborators');
 if (collabSection) {
     const collabItems = collabSection.querySelectorAll('.logo-item');
 
-    // Set initial state explicitly
-    gsap.set(collabItems, { opacity: 0, y: 50 });
+    if (!isMobile) {
+        // Set initial state explicitly
+        gsap.set(collabItems, { opacity: 0, y: 50 });
 
-    // Scroll-triggered Stagger Reveal
-    gsap.to(collabItems, {
-        y: 0,
-        opacity: 1,
-        duration: 1,
-        stagger: 0.1,
-        ease: "power3.out",
-        scrollTrigger: {
-            trigger: collabSection,
-            start: "top 80%",
-        }
-    });
+        // Scroll-triggered Stagger Reveal
+        gsap.to(collabItems, {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+            stagger: 0.1,
+            ease: "power3.out",
+            scrollTrigger: {
+                trigger: collabSection,
+                start: "top 80%",
+            }
+        });
 
-    // Parallax Mouse Depth (GPU-Accelerated)
-    collabSection.addEventListener('mousemove', (e) => {
-        const rect = collabSection.getBoundingClientRect();
-        const x = e.clientX - rect.left - rect.width / 2;
-        const y = e.clientY - rect.top - rect.height / 2;
+        // Parallax Mouse Depth (GPU-Accelerated)
+        collabSection.addEventListener('mousemove', (e) => {
+            const rect = collabSection.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
 
-        collabItems.forEach((item) => {
-            const rotateX = -y * 0.04;
-            const rotateY = x * 0.04;
+            collabItems.forEach((item) => {
+                const rotateX = -y * 0.04;
+                const rotateY = x * 0.04;
 
-            // Use overwrite: "auto" to prevent tween conflicts
-            gsap.to(item, {
-                rotationX: rotateX,
-                rotationY: rotateY,
-                duration: 0.5,
+                gsap.to(item, {
+                    rotationX: rotateX,
+                    rotationY: rotateY,
+                    duration: 0.5,
+                    ease: "power2.out",
+                    transformPerspective: 1000,
+                    overwrite: "auto"
+                });
+            });
+        });
+
+        collabSection.addEventListener('mouseleave', () => {
+            gsap.to(collabItems, {
+                rotationX: 0,
+                rotationY: 0,
+                duration: 0.8,
                 ease: "power2.out",
-                transformPerspective: 1000,
                 overwrite: "auto"
             });
         });
-    });
-
-    collabSection.addEventListener('mouseleave', () => {
-        gsap.to(collabItems, {
-            rotationX: 0,
-            rotationY: 0,
-            duration: 0.8,
-            ease: "power2.out",
-            overwrite: "auto"
-        });
-    });
+    } else {
+        // On mobile: instantly visible, no parallax
+        gsap.set(collabItems, { opacity: 1, y: 0 });
+    }
 
     // Ambient Particle Effects
     const bgContainer = collabSection.querySelector('.clientele-bg');

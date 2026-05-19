@@ -1808,8 +1808,9 @@ img[src*="tmar.jpeg"] {
 /* Reveal */
 .gs-reveal,
 .reveal-text {
-    opacity: 1;
-    transform: none;
+    opacity: 0;
+    transform: translateY(40px);
+    transition: none; /* Let GSAP handle transition */
 }
 
 .reveal-text {
@@ -5247,6 +5248,8 @@ img[src*="tmar.jpeg"] {
         inset 0 -1px 0 rgba(201, 168, 106, 0.05),
         0 24px 60px rgba(0,0,0,0.55);
     transition: border-color 0.5s ease, box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+    transform: translateY(60px);
+    opacity: 0;
     position: relative;
 }
 
@@ -5272,3 +5275,372 @@ img[src*="tmar.jpeg"] {
 .division-row.reverse {
     grid-template-columns: 0.8fr 1.2fr;
 }
+
+/* Person specific layout for Syino's modal */
+.division-detail-content.person-layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    grid-template-areas: 
+        "links logo"
+        "body body";
+    gap: 32px;
+}
+.division-detail-content.person-layout .detail-main-layout {
+    display: contents;
+}
+.division-detail-content.person-layout .detail-logo-wrap {
+    grid-area: logo;
+    margin-bottom: 0;
+}
+.division-detail-content.person-layout .detail-sidebar-links {
+    grid-area: links;
+    margin-top: 0;
+    justify-content: center;
+    position: relative;
+    top: auto;
+}
+.division-detail-content.person-layout .detail-body-text {
+    grid-area: body;
+}
+
+@media (max-width: 900px) {
+    .division-detail-content.person-layout {
+        grid-template-columns: 1fr;
+        grid-template-areas: 
+            "logo"
+            "links"
+            "body";
+    }
+}
+
+/* Footer Responsive Overrides */
+.footer-new-layout {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+    padding: 20px 0;
+}
+.footer-left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+.footer-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .footer-new-layout {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 24px;
+        padding: 30px 0;
+    }
+    .footer-left {
+        align-items: center;
+    }
+    .footer-right {
+        flex-direction: column;
+        gap: 16px;
+    }
+    
+    .more-details-btn {
+        margin-left: 0 !important;
+        margin-top: 10px;
+        width: 100%;
+        text-align: center;
+        display: block;
+    }
+    .director-socials {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+/* =====================================================
+   MOBILE TIMELINE: FLOWCHART LAYOUT
+   Completely overrides the desktop winding-road timeline
+   on screens <= 768px with clean vertical flowchart boxes
+   ===================================================== */
+@media (max-width: 768px) {
+
+    /* Hide the SVG winding road and car */
+    .svg-path-wrapper,
+    #roadWrapper,
+    .winding-ribbon,
+    #timelineCar,
+    .step-dot {
+        display: none !important;
+    }
+
+    /* Collapse the fixed-height milestones layer to auto */
+    .milestones-layer {
+        min-height: unset !important;
+        height: auto !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0;
+        padding: 20px 0 40px;
+    }
+
+    .milestones-layer::before {
+        display: none;
+    }
+
+    /* Reset all absolute-positioned steps to normal flow */
+    .process-step {
+        position: static !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        text-align: center !important;
+        width: 90% !important;
+        max-width: 380px !important;
+        margin: 0 auto !important;
+        transform: none !important;
+        opacity: 1 !important;
+        filter: none !important;
+    }
+
+    /* The content box */
+    .step-label {
+        width: 100%;
+        padding: 20px 18px;
+        text-align: center;
+        border-radius: 16px;
+        position: relative;
+    }
+
+    /* Arrow connector between each step box */
+    .process-step:not(:last-child)::after {
+        content: '';
+        display: block;
+        width: 2px;
+        height: 36px;
+        background: linear-gradient(to bottom, var(--gold), rgba(166,138,86,0.3));
+        margin: 0 auto;
+        position: relative;
+    }
+
+    /* Arrowhead pointing down */
+    .process-step:not(:last-child)::before {
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: 8px solid transparent;
+        border-right: 8px solid transparent;
+        border-top: 10px solid rgba(166,138,86,0.7);
+        margin: 0 auto -1px;
+        position: relative;
+        order: 2;
+        z-index: 2;
+    }
+
+    /* Make the connector and arrowhead appear AFTER the box */
+    /* Using a wrapper trick: step-label is first, then the arrow connectors */
+    .process-step {
+        gap: 0 !important;
+    }
+
+    .step-label {
+        order: 1;
+    }
+
+    /* Downward arrow after label */
+    .step-label::after {
+        content: '';
+        display: block;
+        width: 2px;
+        height: 30px;
+        background: linear-gradient(to bottom, rgba(166,138,86,0.7), rgba(166,138,86,0.2));
+        margin: 0 auto;
+    }
+
+    .step-label:last-child::after,
+    .process-step:last-child .step-label::after {
+        display: none;
+    }
+
+    /* Arrowhead triangle */
+    .step-label::before {
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border-left: 7px solid transparent;
+        border-right: 7px solid transparent;
+        border-top: 9px solid rgba(166,138,86,0.6);
+        margin: 0 auto;
+    }
+
+    .process-step:last-child .step-label::before {
+        display: none;
+    }
+
+    /* Scale down the heading text for mobile */
+    .step-label h3 {
+        font-size: 1.5rem !important;
+    }
+
+    .step-label p {
+        font-size: 0.92rem !important;
+    }
+
+    /* Scale down the section header */
+    .editorial-main-title {
+        font-size: clamp(2.8rem, 12vw, 5rem) !important;
+    }
+
+    .process-header {
+        text-align: center !important;
+        margin-bottom: 5vh !important;
+        padding: 0 20px;
+    }
+
+    /* Reduce timeline section padding on mobile */
+    .process-timeline {
+        padding: 8vh 0 4vh !important;
+    }
+}
+ / *   - - -   S y i n o   C   M a t h e w   H o v e r   E x p a n s i o n   - - -   * / 
+ . s y i n o - e x p a n d e d - c a r d   { 
+         p o s i t i o n :   r e l a t i v e ; 
+         t r a n s i t i o n :   a l l   0 . 5 s   e a s e ; 
+ } 
+ 
+ . s y i n o - e x p a n d e d - c a r d   . c a r d - i n n e r - w r a p   { 
+         p o s i t i o n :   r e l a t i v e ; 
+         z - i n d e x :   2 ; 
+         t r a n s i t i o n :   t r a n s f o r m   0 . 6 s   c u b i c - b e z i e r ( 0 . 2 2 ,   1 ,   0 . 3 6 ,   1 ) ; 
+         b a c k g r o u n d :   i n h e r i t ; 
+         b o r d e r - r a d i u s :   i n h e r i t ; 
+         h e i g h t :   1 0 0 % ; 
+ } 
+ 
+ . s y i n o - e x p a n d e d - c a r d   . d i r e c t o r - d e t a i l s - p a n e   { 
+         p o s i t i o n :   a b s o l u t e ; 
+         t o p :   - 2 0 p x ; 
+         b o t t o m :   - 2 0 p x ; 
+         l e f t :   2 0 % ; 
+         w i d t h :   6 8 0 p x ; 
+         b a c k g r o u n d :   l i n e a r - g r a d i e n t ( 1 4 5 d e g ,   r g b a ( 1 6 ,   1 4 ,   1 0 ,   0 . 9 8 ) ,   r g b a ( 6 ,   5 ,   3 ,   0 . 9 9 ) ) ; 
+         b o r d e r :   1 p x   s o l i d   r g b a ( 2 0 1 ,   1 6 8 ,   1 0 6 ,   0 . 3 ) ; 
+         b o r d e r - r a d i u s :   2 4 p x ; 
+         p a d d i n g :   4 0 p x ; 
+         p a d d i n g - l e f t :   1 4 0 p x ;   / *   S p a c e   f o r   t h e   i m a g e   s l i d i n g   l e f t   * / 
+         o p a c i t y :   0 ; 
+         v i s i b i l i t y :   h i d d e n ; 
+         t r a n s f o r m :   t r a n s l a t e X ( 0 )   s c a l e ( 0 . 9 5 ) ; 
+         t r a n s i t i o n :   a l l   0 . 6 s   c u b i c - b e z i e r ( 0 . 2 2 ,   1 ,   0 . 3 6 ,   1 ) ; 
+         z - i n d e x :   1 ; 
+         o v e r f l o w - y :   a u t o ; 
+         b o x - s h a d o w :   0   3 0 p x   6 0 p x   r g b a ( 0 ,   0 ,   0 ,   0 . 8 ) ,   0   0   4 0 p x   r g b a ( 2 0 1 ,   1 6 8 ,   1 0 6 ,   0 . 1 ) ; 
+         b a c k d r o p - f i l t e r :   b l u r ( 2 0 p x ) ; 
+         - w e b k i t - b a c k d r o p - f i l t e r :   b l u r ( 2 0 p x ) ; 
+ } 
+ 
+ / *   S c r o l l b a r   f o r   d e t a i l s   p a n e   * / 
+ . d i r e c t o r - d e t a i l s - p a n e : : - w e b k i t - s c r o l l b a r   { 
+         w i d t h :   4 p x ; 
+ } 
+ . d i r e c t o r - d e t a i l s - p a n e : : - w e b k i t - s c r o l l b a r - t h u m b   { 
+         b a c k g r o u n d :   r g b a ( 2 0 1 ,   1 6 8 ,   1 0 6 ,   0 . 4 ) ; 
+         b o r d e r - r a d i u s :   4 p x ; 
+ } 
+ 
+ . s y i n o - e x p a n d e d - c a r d : h o v e r   { 
+         z - i n d e x :   1 0 0 ; 
+ } 
+ 
+ . s y i n o - e x p a n d e d - c a r d : h o v e r   . c a r d - i n n e r - w r a p   { 
+         t r a n s f o r m :   t r a n s l a t e X ( - 1 6 0 p x ) ; 
+ } 
+ 
+ . s y i n o - e x p a n d e d - c a r d : h o v e r   . d i r e c t o r - d e t a i l s - p a n e   { 
+         o p a c i t y :   1 ; 
+         v i s i b i l i t y :   v i s i b l e ; 
+         t r a n s f o r m :   t r a n s l a t e X ( 0 )   s c a l e ( 1 ) ; 
+         l e f t :   1 2 0 p x ; 
+         p o i n t e r - e v e n t s :   a u t o ; 
+ } 
+ 
+ . d i r e c t o r - d e t a i l s - p a n e   h 4   { 
+         c o l o r :   # f 0 e 2 c 0 ; 
+         f o n t - s i z e :   1 . 8 r e m ; 
+         m a r g i n - b o t t o m :   2 0 p x ; 
+         f o n t - f a m i l y :   ' C i n z e l ' ,   s e r i f ; 
+         l e t t e r - s p a c i n g :   0 . 0 5 e m ; 
+         b o r d e r - b o t t o m :   1 p x   s o l i d   r g b a ( 2 0 1 ,   1 6 8 ,   1 0 6 ,   0 . 2 ) ; 
+         p a d d i n g - b o t t o m :   1 0 p x ; 
+ } 
+ 
+ . d i r e c t o r - d e t a i l s - p a n e   h 5   { 
+         c o l o r :   v a r ( - - g o l d - l i g h t ) ; 
+         f o n t - s i z e :   1 . 2 5 r e m ; 
+         m a r g i n - t o p :   3 0 p x ; 
+         m a r g i n - b o t t o m :   1 5 p x ; 
+         f o n t - f a m i l y :   ' C i n z e l ' ,   s e r i f ; 
+         l e t t e r - s p a c i n g :   0 . 0 3 e m ; 
+ } 
+ 
+ . d i r e c t o r - d e t a i l s - p a n e   h 6   { 
+         c o l o r :   # e 8 d 4 a 8 ; 
+         f o n t - s i z e :   1 . 0 5 r e m ; 
+         m a r g i n - t o p :   2 0 p x ; 
+         m a r g i n - b o t t o m :   8 p x ; 
+         f o n t - f a m i l y :   v a r ( - - f o n t - h e a d i n g ) ; 
+ } 
+ 
+ . d i r e c t o r - d e t a i l s - p a n e   p ,   . d i r e c t o r - d e t a i l s - p a n e   u l   { 
+         c o l o r :   r g b a ( 2 2 8 ,   2 1 0 ,   1 7 5 ,   0 . 8 5 ) ; 
+         f o n t - s i z e :   0 . 9 5 r e m ; 
+         l i n e - h e i g h t :   1 . 7 ; 
+         m a r g i n - b o t t o m :   1 5 p x ; 
+         f o n t - f a m i l y :   v a r ( - - f o n t - b o d y ) ; 
+ } 
+ 
+ . d i r e c t o r - d e t a i l s - p a n e   u l   { 
+         p a d d i n g - l e f t :   2 0 p x ; 
+         l i s t - s t y l e - t y p e :   n o n e ; 
+ } 
+ 
+ . d i r e c t o r - d e t a i l s - p a n e   l i   { 
+         m a r g i n - b o t t o m :   1 0 p x ; 
+         p o s i t i o n :   r e l a t i v e ; 
+ } 
+ 
+ . d i r e c t o r - d e t a i l s - p a n e   l i : : b e f o r e   { 
+         c o n t e n t :   ' &'' ; 
+         p o s i t i o n :   a b s o l u t e ; 
+         l e f t :   - 2 0 p x ; 
+         c o l o r :   v a r ( - - g o l d ) ; 
+         f o n t - s i z e :   0 . 8 r e m ; 
+         t o p :   2 p x ; 
+ } 
+ 
+ @ m e d i a   ( m a x - w i d t h :   1 0 2 4 p x )   { 
+         . s y i n o - e x p a n d e d - c a r d : h o v e r   . c a r d - i n n e r - w r a p   { 
+                 t r a n s f o r m :   t r a n s l a t e Y ( - 8 0 p x ) ; 
+         } 
+         . s y i n o - e x p a n d e d - c a r d   . d i r e c t o r - d e t a i l s - p a n e   { 
+                 l e f t :   0 ; 
+                 t o p :   6 0 % ; 
+                 w i d t h :   1 0 0 % ; 
+                 p a d d i n g :   3 0 p x ; 
+                 p a d d i n g - t o p :   1 0 0 p x ; 
+         } 
+         . s y i n o - e x p a n d e d - c a r d : h o v e r   . d i r e c t o r - d e t a i l s - p a n e   { 
+                 l e f t :   0 ; 
+                 t r a n s f o r m :   t r a n s l a t e Y ( 0 ) ; 
+         } 
+ } 
+  
+ 
