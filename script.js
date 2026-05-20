@@ -8,6 +8,43 @@ window.addEventListener('scroll', () => {
         nav.classList.remove('scrolled');
     }
 }, { passive: true });
+
+// --- MOBILE HAMBURGER DRAWER ---
+(function () {
+    const toggle = document.getElementById('hamburgerToggle');
+    const drawer = document.getElementById('mobileDrawer');
+    const overlay = document.getElementById('drawerOverlay');
+    const closeBtn = document.getElementById('drawerClose');
+    const links = document.querySelectorAll('.drawer-link');
+
+    if (!toggle || !drawer) return;
+
+    function openDrawer() {
+        drawer.classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+        drawer.classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    toggle.addEventListener('click', openDrawer);
+    closeBtn.addEventListener('click', closeDrawer);
+    overlay.addEventListener('click', closeDrawer);
+
+    links.forEach(link => {
+        link.addEventListener('click', () => {
+            closeDrawer();
+        });
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('open')) {
+            closeDrawer();
+        }
+    });
+})();
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
 // --- MOBILE DETECTION ---
@@ -121,45 +158,64 @@ if (heroImg && heroSection && heroMainVisual) {
             ease: "power2.out"
         }, 0.35);
 
-    const heroTl = gsap.timeline({
-        scrollTrigger: {
-            trigger: heroSection,
-            start: "top top",
-            end: "bottom top",
-            scrub: 1.2
-        }
-    });
+    if (!isMobile) {
+        const heroTl = gsap.timeline({
+            scrollTrigger: {
+                trigger: heroSection,
+                start: "top top",
+                end: "bottom top",
+                scrub: 1.2
+            }
+        });
 
-    // New cinematic logo scroll animation
-    heroTl
-        .to(heroImg, {
-            scale: 2.5,
-            opacity: 0,
-            ease: "none",
-            force3D: true
-        }, 0)
-        .to(heroIndicator, {
-            opacity: 0,
-            y: 30,
-            ease: "none",
-            force3D: true
-        }, 0);
+        // New cinematic logo scroll animation
+        heroTl
+            .to(heroImg, {
+                scale: 2.5,
+                opacity: 0,
+                ease: "none",
+                force3D: true
+            }, 0)
+            .to(heroIndicator, {
+                opacity: 0,
+                y: 30,
+                ease: "none",
+                force3D: true
+            }, 0);
+    }
 
     if (legacySection) {
-        gsap.fromTo(legacySection,
-            { opacity: 0, y: 120 },
-            {
-                opacity: 1,
-                y: 0,
-                ease: "power3.out",
-                scrollTrigger: {
-                    trigger: heroSection,
-                    start: "70% top",
-                    end: "bottom top",
-                    scrub: 1
+        if (!isMobile) {
+            gsap.fromTo(legacySection,
+                { opacity: 0, y: 120 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: heroSection,
+                        start: "70% top",
+                        end: "bottom top",
+                        scrub: 1
+                    }
                 }
-            }
-        );
+            );
+        } else {
+            gsap.fromTo(legacySection,
+                { opacity: 0, y: 50 },
+                {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    ease: "power3.out",
+                    scrollTrigger: {
+                        trigger: legacySection,
+                        start: "top 95%",
+                        toggleActions: "play none none none"
+                    }
+                }
+            );
+        }
     }
 }
 // --- PREMIUM ABOUT REVEAL ---
@@ -169,12 +225,12 @@ if (!isMobile) {
         {
             y: 0,
             opacity: 1,
-            duration: 0.6,
-            stagger: 0.15,
+            duration: 0.5,
+            stagger: 0.1,
             ease: "power3.out",
             scrollTrigger: {
                 trigger: ".legacy",
-                start: "top 85%"
+                start: "top 95%"
             }
         });
 } else {
@@ -676,5 +732,18 @@ if (collabSection) {
                 delay: Math.random() * 5
             });
         }
+    }
+}
+
+// --- AUTO-SCROLL COLLABORATORS ON MOBILE ---
+if (isMobile) {
+    const collabGrid = document.querySelector('.collaborators-grid');
+    if (collabGrid) {
+        const logos = Array.from(collabGrid.children);
+        logos.forEach(logo => {
+            const clone = logo.cloneNode(true);
+            collabGrid.appendChild(clone);
+        });
+        collabGrid.classList.add('marquee-active');
     }
 }
