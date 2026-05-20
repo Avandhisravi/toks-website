@@ -1966,7 +1966,7 @@ img[src*="tmar.jpeg"] {
 /* Footer */
 .footer {
     text-align: center;
-    padding: 1rem 0;
+    padding: 1.5rem 0;
     border-top: 1px solid var(--border-color);
     color: var(--text-secondary);
     font-size: 1rem;
@@ -1993,11 +1993,99 @@ img[src*="tmar.jpeg"] {
     text-align: left;
 }
 
+.footer-copyright-text {
+    margin: 0;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-family: var(--font-body);
+}
+
 .footer-right {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
     gap: 16px;
+}
+
+.footer-contact-item.mail-item {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--gold-light);
+}
+
+.footer-email-link {
+    color: inherit;
+    text-decoration: none;
+    font-family: var(--font-body);
+    letter-spacing: 0.05em;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-email-link:hover {
+    color: #f0e2c0;
+}
+
+.footer-social-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.footer-social-icon {
+    color: var(--gold-light);
+    transition: color 0.3s ease, transform 0.3s ease;
+    display: flex;
+    align-items: center;
+}
+
+.footer-social-icon:hover {
+    color: #f0e2c0;
+    transform: translateY(-2px);
+}
+
+/* Mobile Footer: email → socials → copyright */
+@media (max-width: 768px) {
+    .footer-new-layout {
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+        gap: 20px;
+        padding: 0 20px;
+    }
+
+    .footer-left {
+        align-items: center;
+        text-align: center;
+        width: 100%;
+    }
+
+    .footer-right {
+        align-items: flex-start;
+        text-align: left;
+        width: 100%;
+    }
+
+    /* Reorder: social block first, copyright last */
+    .footer-social-block {
+        order: -1;
+    }
+
+    .footer-copyright-block {
+        order: 1;
+    }
+
+    .footer-social-row {
+        justify-content: flex-start;
+    }
+
+    .footer-contact-item.mail-item {
+        justify-content: flex-start;
+    }
 }
 
 /* Reveal */
@@ -2050,18 +2138,6 @@ img[src*="tmar.jpeg"] {
     .legacy-desc {
         font-size: 1rem;
         line-height: 1.8;
-    }
-
-    .footer-new-layout {
-        flex-direction: column;
-        justify-content: center;
-        text-align: center;
-        gap: 30px;
-    }
-
-    .footer-left,
-    .footer-right {
-        align-items: center;
     }
 }
 
