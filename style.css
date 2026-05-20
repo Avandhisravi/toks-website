@@ -132,15 +132,29 @@
     transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-.hamburger-line:nth-child(1) { width: 28px; }
-.hamburger-line:nth-child(2) { width: 22px; }
-.hamburger-line:nth-child(3) { width: 16px; }
+.hamburger-line:nth-child(1) {
+    width: 28px;
+}
+
+.hamburger-line:nth-child(2) {
+    width: 22px;
+}
+
+.hamburger-line:nth-child(3) {
+    width: 16px;
+}
 
 .hamburger-toggle:hover .hamburger-line {
     background: var(--gold);
 }
-.hamburger-toggle:hover .hamburger-line:nth-child(2) { width: 28px; }
-.hamburger-toggle:hover .hamburger-line:nth-child(3) { width: 28px; }
+
+.hamburger-toggle:hover .hamburger-line:nth-child(2) {
+    width: 28px;
+}
+
+.hamburger-toggle:hover .hamburger-line:nth-child(3) {
+    width: 28px;
+}
 
 /* Mobile Slide-Out Drawer */
 .mobile-drawer {
@@ -235,11 +249,25 @@
 }
 
 /* Staggered entry */
-.mobile-drawer.open .drawer-link:nth-child(1) { transition-delay: 0.15s; }
-.mobile-drawer.open .drawer-link:nth-child(2) { transition-delay: 0.22s; }
-.mobile-drawer.open .drawer-link:nth-child(3) { transition-delay: 0.29s; }
-.mobile-drawer.open .drawer-link:nth-child(4) { transition-delay: 0.36s; }
-.mobile-drawer.open .drawer-link:nth-child(5) { transition-delay: 0.43s; }
+.mobile-drawer.open .drawer-link:nth-child(1) {
+    transition-delay: 0.15s;
+}
+
+.mobile-drawer.open .drawer-link:nth-child(2) {
+    transition-delay: 0.22s;
+}
+
+.mobile-drawer.open .drawer-link:nth-child(3) {
+    transition-delay: 0.29s;
+}
+
+.mobile-drawer.open .drawer-link:nth-child(4) {
+    transition-delay: 0.36s;
+}
+
+.mobile-drawer.open .drawer-link:nth-child(5) {
+    transition-delay: 0.43s;
+}
 
 .drawer-link:hover {
     color: var(--gold);
@@ -647,14 +675,18 @@ video {
         height: auto;
         object-fit: contain;
         z-index: 10;
-        filter: drop-shadow(0 0 50px rgba(201, 168, 106, 0.4))
-               drop-shadow(0 0 120px rgba(201, 168, 106, 0.15));
+        filter: drop-shadow(0 0 50px rgba(201, 168, 106, 0.4)) drop-shadow(0 0 120px rgba(201, 168, 106, 0.15));
         animation: cutoutPulse 4s ease-in-out infinite alternate;
     }
 
     @keyframes cutoutPulse {
-        0% { filter: drop-shadow(0 0 50px rgba(201, 168, 106, 0.4)) drop-shadow(0 0 120px rgba(201, 168, 106, 0.15)); }
-        100% { filter: drop-shadow(0 0 70px rgba(201, 168, 106, 0.55)) drop-shadow(0 0 150px rgba(201, 168, 106, 0.25)); }
+        0% {
+            filter: drop-shadow(0 0 50px rgba(201, 168, 106, 0.4)) drop-shadow(0 0 120px rgba(201, 168, 106, 0.15));
+        }
+
+        100% {
+            filter: drop-shadow(0 0 70px rgba(201, 168, 106, 0.55)) drop-shadow(0 0 150px rgba(201, 168, 106, 0.25));
+        }
     }
 }
 
@@ -2048,26 +2080,20 @@ img[src*="tmar.jpeg"] {
     transform: translateY(-2px);
 }
 
-/* Mobile Footer: email → socials → copyright */
+/* Mobile Footer: email → socials → copyright, all centered */
 @media (max-width: 768px) {
     .footer-new-layout {
         flex-direction: column;
-        align-items: flex-start;
-        text-align: left;
+        align-items: center;
+        text-align: center;
         gap: 20px;
         padding: 0 20px;
     }
 
-    .footer-left {
+    .footer-left,
+    .footer-right {
         align-items: center;
         text-align: center;
-        width: 100%;
-    }
-
-    .footer-right {
-        align-items: flex-start;
-        text-align: left;
-        width: 100%;
     }
 
     /* Reorder: social block first, copyright last */
@@ -2080,11 +2106,11 @@ img[src*="tmar.jpeg"] {
     }
 
     .footer-social-row {
-        justify-content: flex-start;
+        justify-content: center;
     }
 
     .footer-contact-item.mail-item {
-        justify-content: flex-start;
+        justify-content: center;
     }
 }
 
@@ -5952,7 +5978,7 @@ img[src*="tmar.jpeg"] {
         -webkit-overflow-scrolling: touch !important;
         scrollbar-width: none !important;
     }
-    
+
     .recognition-masonry::-webkit-scrollbar {
         display: none !important;
     }
@@ -6000,6 +6026,7 @@ img[src*="tmar.jpeg"] {
         0% {
             transform: translateX(0);
         }
+
         100% {
             transform: translateX(-50%);
         }
@@ -6009,14 +6036,126 @@ img[src*="tmar.jpeg"] {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
-        overflow-x: hidden !important; /* Hide touch scroll scrollbar */
+        overflow-x: hidden !important;
+        /* Hide touch scroll scrollbar */
         justify-content: flex-start !important;
         animation: marqueeScroll 25s linear infinite !important;
         width: max-content !important;
-        scroll-snap-type: none !important; /* Disable snapping during auto-scroll */
+        scroll-snap-type: none !important;
+        /* Disable snapping during auto-scroll */
     }
 
     .collaborators-grid.marquee-active #collaborators .logo-item {
         scroll-snap-align: none !important;
+    }
+}
+
+/* ==========================================================
+   FORCE OVERRIDE: FIXED MOBILE COMPACT RATIOS FOR MORE DETAILS 
+   ========================================================== */
+@media screen and (max-width: 768px) {
+
+    /* Force the main sliding overlay window layout to fit nicely */
+    body.overflow-hidden div#cinematicOverlay.cinematic-overlay.active,
+    div#cinematicOverlay.cinematic-overlay.active {
+        display: flex !important;
+        flex-direction: column !important;
+        justify-content: flex-start !important;
+        height: 100vh !important;
+        width: 100vw !important;
+        overflow-y: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+    }
+
+    /* Shrink the wrapper content so it feels like a normal card ratio */
+    div#cinematicOverlay .microsite-content {
+        display: block !important;
+        padding: 24px 16px 40px !important;
+        height: auto !important;
+        min-height: 0 !important;
+        width: 100% !important;
+    }
+
+    /* Standardize the background panel container */
+    div#cinematicOverlay .division-detail-shell {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 auto !important;
+        background: rgba(8, 8, 8, 0.98) !important;
+        border: 1px solid rgba(201, 168, 106, 0.25) !important;
+        border-radius: 24px !important;
+    }
+
+    /* Shrink the large header wrapper logo banner */
+    div#cinematicOverlay .detail-logo-wrap {
+        padding: 24px 16px !important;
+        border-radius: 23px 23px 0 0 !important;
+        background: rgba(16, 14, 10, 0.95) !important;
+        margin-bottom: 0 !important;
+    }
+
+    div#cinematicOverlay .detail-logo-image {
+        max-height: 55px !important;
+        max-width: 150px !important;
+    }
+
+    /* Shatter desktop side-by-side grids into clean vertical stacks */
+    div#cinematicOverlay .detail-main-layout {
+        display: flex !important;
+        flex-direction: column !important;
+        grid-template-columns: none !important;
+        gap: 20px !important;
+        padding: 24px 16px !important;
+    }
+
+    /* Make text blocks take up normal, readable spacing proportions */
+    div#cinematicOverlay .detail-body-text {
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    div#cinematicOverlay .detail-title {
+        font-size: 1.5rem !important;
+        margin-bottom: 12px !important;
+        text-align: center !important;
+    }
+
+    div#cinematicOverlay .detail-title::after {
+        margin: 10px auto 0 !important;
+        /* Centers your sleek luxury gold dividing line */
+    }
+
+    div#cinematicOverlay .detail-description {
+        font-size: 0.95rem !important;
+        line-height: 1.6 !important;
+        text-align: justify !important;
+        margin-bottom: 0 !important;
+    }
+
+    /* Flatten info cards vertically so they align with your other pages */
+    div#cinematicOverlay .detail-sidebar-links {
+        position: static !important;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 10px !important;
+        width: 100% !important;
+    }
+
+    div#cinematicOverlay .sidebar-info-card {
+        padding: 14px 18px !important;
+        border-radius: 12px !important;
+        text-align: left !important;
+        transform: none !important;
+    }
+
+    div#cinematicOverlay .meta-label {
+        font-size: 0.72rem !important;
+        letter-spacing: 0.15em !important;
+    }
+
+    div#cinematicOverlay .meta-value {
+        font-size: 1.05rem !important;
     }
 }
