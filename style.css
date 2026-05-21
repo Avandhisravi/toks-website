@@ -5900,6 +5900,18 @@ img[src*="tmar.jpeg"] {
 
     .footer-right {
         align-items: flex-start;
+        width: 100%;
+    }
+
+    .footer-contact-item.mail-item {
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 12px;
+    }
+
+    .footer-social-row {
+        width: 100%;
+        justify-content: center;
     }
 
     /* Mobile Divisions Layout: Picture -> Logo -> More Details */
@@ -6313,5 +6325,20 @@ img[src*="tmar.jpeg"] {
     .premium-hero {
         max-width: 100vw !important;
         overflow-x: hidden !important;
+    }
+}
+
+/* Existing CSS above */
+
+.footer-bottom {
+    display: flex;
+}
+
+/* Paste this at the bottom */
+@media screen and (max-width: 768px) {
+    .footer-bottom {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }
